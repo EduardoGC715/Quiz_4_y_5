@@ -14,6 +14,7 @@ private:
     int quantity;
     bool empty;
     Node<T> *searchPosition = NULL;
+    //Se elimina el puntero searchBehind: Los nodos ya poseen doble enlace
     //Node<T> *searchBehind = NULL;
 
 public:
@@ -28,6 +29,7 @@ public:
         Node<T> *newNode = new Node<T>(pData);
 
         if (quantity>0) {
+            //El anterior de newNode se le asigna la ultima posicion
             newNode->setPrevious(last);
             this->last->setNext(newNode);
         } else {
@@ -71,13 +73,16 @@ public:
 
         if (pPosition<getSize() && first!=NULL) {
             Node<T> *newNodo = new Node<T>(pData);
-
+            //Llamado de find para actualizar puntero searchPosition.(No borrar)
             T* result = find(pPosition);
 
             newNodo->setNext(searchPosition);
             if (searchPosition->getPrevious()!=NULL) {
+                //Anterior a newNodo es el (anterior de searchPosition)
                 newNodo->setPrevious(searchPosition->getPrevious());
+                //El siguiente al (anterior de searchPosition) es newNodo
                 searchPosition->getPrevious()->setNext(newNodo);
+                //El anterior de searchPosition es NewNodo
                 searchPosition->setPrevious(newNodo);
 
             } else {
@@ -95,17 +100,21 @@ public:
         if (first!=NULL && pPosition<getSize()) {
             Node<T> *search = first;
             if (pPosition!=0) {
-                //Llamado de find para actualizar puntero searchPosition.
+                //Llamado de find para actualizar puntero searchPosition. (No borrar)
+
                 T* data = find(pPosition);
-                searchPosition->getNext()->setPrevious(searchPosition->getPrevious());
+                //desenlaza *anterior de searchPosition
                 searchPosition->getPrevious()->setNext(searchPosition->getNext());
-                cout<<"antes del if";
+
                 if (searchPosition==last) {
-                    cout<<"dentro del if";
+                    //Actualiza puntero last.
                     last = searchPosition->getPrevious();
                     last->setNext(NULL);
                 }
-                cout<<"despues del if";
+                else{
+                    //Desenlaza *siguiente de searchPosition. Solo si no es el ultimo.
+                    searchPosition->getNext()->setPrevious(searchPosition->getPrevious());
+                }
                 searchPosition->setNext(NULL);
                 searchPosition->setPrevious(NULL);
 
