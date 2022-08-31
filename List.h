@@ -14,7 +14,7 @@ private:
     int quantity;
     bool empty;
     Node<T> *searchPosition = NULL;
-    Node<T> *searchBehind = NULL;
+    //Node<T> *searchBehind = NULL;
 
 public:
     List() {
@@ -28,6 +28,7 @@ public:
         Node<T> *newNode = new Node<T>(pData);
 
         if (quantity>0) {
+            newNode->setPrevious(last);
             this->last->setNext(newNode);
         } else {
             this->first = newNode;
@@ -53,11 +54,9 @@ public:
     T* find(int pPosition) {
         T* result = NULL;
         searchPosition = this->first;
-        searchBehind = NULL;
 
         if (pPosition<getSize()) {
             while(pPosition>0) {
-                searchBehind = searchPosition;
                 searchPosition = searchPosition->getNext();
                 pPosition--;
             }
@@ -76,8 +75,11 @@ public:
             T* result = find(pPosition);
 
             newNodo->setNext(searchPosition);
-            if (searchBehind!=NULL) {
-                searchBehind->setNext(newNodo);
+            if (searchPosition->getPrevious()!=NULL) {
+                newNodo->setPrevious(searchPosition->getPrevious());
+                searchPosition->getPrevious()->setNext(newNodo);
+                searchPosition->setPrevious(newNodo);
+
             } else {
                 this->first = newNodo;
             }
@@ -93,14 +95,20 @@ public:
         if (first!=NULL && pPosition<getSize()) {
             Node<T> *search = first;
             if (pPosition!=0) {
+                //Llamado de find para actualizar puntero searchPosition.
                 T* data = find(pPosition);
-
-                searchBehind->setNext(searchPosition->getNext());
-
+                searchPosition->getNext()->setPrevious(searchPosition->getPrevious());
+                searchPosition->getPrevious()->setNext(searchPosition->getNext());
+                cout<<"antes del if";
                 if (searchPosition==last) {
-                    last = searchBehind;
+                    cout<<"dentro del if";
+                    last = searchPosition->getPrevious();
+                    last->setNext(NULL);
                 }
+                cout<<"despues del if";
                 searchPosition->setNext(NULL);
+                searchPosition->setPrevious(NULL);
+
             } else {
                 first = first->getNext();
                 search->setNext(NULL);

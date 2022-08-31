@@ -29,9 +29,10 @@ int main() {
     listB->add(new string("cuarto mensaje de prueba"));
     listB->add(new string("quinto mensaje de prueba"));
 
-    listB->remove(0);
-    listB->remove(3);
-    listB->remove(1);
+    //listB->remove(0);
+    //listB->remove(3);
+    listB->remove(4);
+    //listB->remove(1);
 
     for(int i=0; i<listA->getSize(); i++) {
         Event *currentEvent = listA->find(i);
